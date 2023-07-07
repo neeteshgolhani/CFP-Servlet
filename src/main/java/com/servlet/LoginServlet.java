@@ -13,13 +13,15 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("user");
         String password = request.getParameter("password");
 
-        if (isValidName(username) && username.equals("Admin") && password.equals("password")) {
+        if (isValidName(username) && isValidPassword(password) && username.equals("Admin") && password.equals("Password@123")) {
             response.sendRedirect("LoginSucces.jsp");
         } else {
             RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.html");
             PrintWriter out = response.getWriter();
             if (!isValidName(username)) {
                 out.println("<font color=red>Please enter a valid name starting with a capital letter and having a minimum of three characters.</font>");
+            } else if (!isValidPassword(password)) {
+                out.println("<font color=red>Please enter a valid password adhering to the specified rules.</font>");
             } else {
                 out.println("<font color=red>Incorrect Credential</font>");
             }
@@ -30,5 +32,10 @@ public class LoginServlet extends HttpServlet {
     private boolean isValidName(String name) {
         // Check if the name starts with a capital letter and has a minimum of three characters
         return name.matches("[A-Z][a-zA-Z]{2,}");
+    }
+
+    private boolean isValidPassword(String password) {
+        // Check if the password adheres to the specified rules
+        return password.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
     }
 }
